@@ -1,4 +1,5 @@
 const EventEmitter = require('events');
+const setupNotifications = require('./notification');
 
 class ChatRoom extends EventEmitter {
   constructor(type = 'public') {
@@ -10,6 +11,8 @@ class ChatRoom extends EventEmitter {
     this.type = type;
     this.users = [];
     this.messages = [];
+
+    setupNotifications(this);
   }
 
   addUser(username) {
@@ -19,7 +22,7 @@ class ChatRoom extends EventEmitter {
     }
 
     if (this.users.includes(username)) {
-      this.emit('error',' User' + "${username}" +'already exists in the chatroom.');
+      this.emit('error', `User ${username} already exists in the chatroom.`);
       return;
     }
 
@@ -29,7 +32,7 @@ class ChatRoom extends EventEmitter {
 
   sendMessage(username, message) {
     if (!this.users.includes(username)) {
-      this.emit('error', 'User'+ "${username}"+' is not in the chatroom.');
+      this.emit('error', `User ${username} is not in the chatroom.`);
       return;
     }
 
@@ -39,7 +42,7 @@ class ChatRoom extends EventEmitter {
       timestamp: new Date(),
     };
     this.messages.push(msg);
-    this.emit('messageSent', msg);
+    this.emit('message', msg); // changed from 'Update'
   }
 
   getMessages() {
@@ -51,4 +54,4 @@ class ChatRoom extends EventEmitter {
   }
 }
 
-module.exports = ChatRoom
+module.exports = ChatRoom;
